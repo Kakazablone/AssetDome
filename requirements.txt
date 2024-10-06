@@ -2,10 +2,13 @@
 Django==4.2.16
 djangorestframework==3.15.2
 djangorestframework-simplejwt==5.3.1
+django-cors-headers==4.4.0
 
 # Celery and related libraries
 celery==5.4.0
 django-celery-beat==2.7.0
+kombu==5.4.2
+amqp==5.2.0
 
 # Django extensions and utilities
 django-cleanup==8.1.0
@@ -16,15 +19,8 @@ drf-yasg==1.21.7
 
 # Asynchronous support
 asgiref==3.8.1
-kombu==5.4.2
-amqp==5.2.0
 async-timeout==4.0.3
-
-# Date and time handling
-python-dateutil==2.9.0.post0
-pytz==2024.1
-backports.zoneinfo==0.2.1
-tzdata==2024.1
+billiard==4.2.1
 
 # Data handling and analysis
 pandas==2.0.3
@@ -53,6 +49,19 @@ click-plugins==1.1.1
 click-repl==0.3.0
 prompt-toolkit==3.0.48
 
+# Networking and HTTP
+requests==2.32.3
+urllib3==2.2.3
+idna==3.10
+chardet==5.2.0
+charset-normalizer==3.3.2
+
+# Date and time handling
+python-dateutil==2.9.0.post0
+pytz==2024.1
+backports.zoneinfo==0.2.1
+tzdata==2024.1
+
 # Additional utilities
 six==1.16.0
 inflection==0.5.1
@@ -61,12 +70,10 @@ pyphen==0.16.0
 wcwidth==0.2.13
 pycparser==2.22
 
-# Caching, Celery Scheduling and performance
-redis==5.0.8
-
 # Miscellaneous
-chardet==5.2.0
-drf-yasg==1.21.7
+cron-descriptor==1.4.5
+fonttools==4.54.1
 et-xmlfile==1.1.0
-sqlparse==0.5.1
+pydyf==0.11.0
 tinycss2==1.3.0
+zopfli==0.2.3
