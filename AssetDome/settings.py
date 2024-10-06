@@ -41,7 +41,6 @@ INSTALLED_APPS = [
     'assets',
     'authentication',
     'rest_framework',
-    'homepage',
     'rest_framework_simplejwt',
     'django_cleanup.apps.CleanupConfig',
     'django_filters',
