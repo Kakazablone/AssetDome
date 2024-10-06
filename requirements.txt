@@ -1,59 +1,72 @@
-amqp==5.2.0
-asgiref==3.8.1
-async-timeout==4.0.3
-backports.zoneinfo==0.2.1
-billiard==4.2.1
-Brotli==1.1.0
-celery==5.4.0
-cffi==1.17.1
-chardet==5.2.0
-click==8.1.7
-click-didyoumean==0.3.1
-click-plugins==1.1.1
-click-repl==0.3.0
-cron-descriptor==1.4.5
-cssselect2==0.7.0
+# Core dependencies
 Django==4.2.16
+djangorestframework==3.15.2
+djangorestframework-simplejwt==5.3.1
+
+# Celery and related libraries
+celery==5.4.0
 django-celery-beat==2.7.0
+
+# Django extensions and utilities
 django-cleanup==8.1.0
 django-filter==24.3
 django-redis==5.4.0
 django-timezone-field==7.0
-djangorestframework==3.15.2
-djangorestframework-simplejwt==5.3.1
 drf-yasg==1.21.7
-et-xmlfile==1.1.0
-fonttools==4.54.1
-geographiclib==2.0
-geopy==2.4.1
-html5lib==1.1
-inflection==0.5.1
+
+# Asynchronous support
+asgiref==3.8.1
 kombu==5.4.2
-numpy==1.24.4
-openpyxl==3.1.5
-packaging==24.1
-pandas==2.0.3
-pillow==10.4.0
-prompt-toolkit==3.0.48
-pycparser==2.22
-pydyf==0.11.0
-PyJWT==2.9.0
-pyphen==0.16.0
-python-crontab==3.2.0
+amqp==5.2.0
+async-timeout==4.0.3
+
+# Date and time handling
 python-dateutil==2.9.0.post0
 pytz==2024.1
-PyYAML==6.0.2
-redis==5.0.8
+backports.zoneinfo==0.2.1
+tzdata==2024.1
+
+# Data handling and analysis
+pandas==2.0.3
+numpy==1.24.4
+
+# Excel and document generation
+openpyxl==3.1.5
+XlsxWriter==3.2.0
 reportlab==4.2.2
+
+# Web scraping and HTML parsing
+html5lib==1.1
+cssselect2==0.7.0
+weasyprint==61.2
+
+# Serialization and file formats
+PyYAML==6.0.2
+Brotli==1.1.0
+geopy==2.4.1
+geographiclib==2.0
+
+# Command line and interactive tools
+click==8.1.7
+click-didyoumean==0.3.1
+click-plugins==1.1.1
+click-repl==0.3.0
+prompt-toolkit==3.0.48
+
+# Additional utilities
 six==1.16.0
+inflection==0.5.1
+vine==5.1.0
+pyphen==0.16.0
+wcwidth==0.2.13
+pycparser==2.22
+
+# Caching, Celery Scheduling and performance
+redis==5.0.8
+
+# Miscellaneous
+chardet==5.2.0
+drf-yasg==1.21.7
+et-xmlfile==1.1.0
 sqlparse==0.5.1
 tinycss2==1.3.0
-typing-extensions==4.12.2
-tzdata==2024.1
-uritemplate==4.1.1
-vine==5.1.0
-wcwidth==0.2.13
-weasyprint==61.2
-webencodings==0.5.1
-XlsxWriter==3.2.0
-zopfli==0.2.3
