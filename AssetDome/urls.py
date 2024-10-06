@@ -38,7 +38,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('auth/', include('authentication.urls')),  # Authentication endpoints
     path('api/', include('assets.urls')),  # Assets endpoints
-    path('', include('homepage.urls')), #rootpage
+    # path('', include('homepage.urls')), #rootpage
 
     # Swagger UI documentation
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
