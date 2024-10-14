@@ -1,4 +1,5 @@
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.response import Response
 
 class StandardResultsSetPagination(PageNumberPagination):
     """
@@ -12,3 +13,12 @@ class StandardResultsSetPagination(PageNumberPagination):
     page_size: int = 10
     page_size_query_param: str = 'page_size'
     max_page_size: int = 100
+
+    def get_paginated_response(self, data):
+        return Response({
+            'next': self.get_next_link(),
+            'next_page_number': self.page.number + 1 if self.page.has_next() else None,
+            'previous': self.get_previous_link(),
+            'previous_page_number': self.page.number - 1 if self.page.has_previous() else None,
+            'results': data,
+        })

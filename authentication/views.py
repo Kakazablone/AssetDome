@@ -23,6 +23,7 @@ from django.utils.encoding import force_str, force_bytes
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.contrib.auth.tokens import default_token_generator
 from rest_framework.exceptions import ValidationError
+from django.shortcuts import redirect
 
 
 
@@ -127,6 +128,7 @@ class LoginViewSet(viewsets.GenericViewSet):
         user = authenticate(username=email, password=password)
 
         if user is not None:
+            # Log the successful authentication
             logger.info("User %s authenticated successfully.", email)
 
             # Determine access and refresh token lifetimes based on 'remember_me' flag
@@ -143,6 +145,10 @@ class LoginViewSet(viewsets.GenericViewSet):
             access_token = AccessToken.for_user(user)
             access_token.set_exp(lifetime=access_token_lifetime)
 
+            # Add custom claims to the access token
+            access_token['user_id'] = user.id  # Add user ID as a claim
+            access_token['first_name'] = user.first_name  # Add first name as a claim
+
             refresh_token = RefreshToken.for_user(user)
             refresh_token['remember_me'] = remember_me  # Store remember_me in the refresh token
             refresh_token.set_exp(lifetime=refresh_token_lifetime)
@@ -155,7 +161,7 @@ class LoginViewSet(viewsets.GenericViewSet):
                 key='access_token',
                 value=str(access_token),
                 httponly=True,
-                secure=True,
+                secure=False,
                 samesite='Lax',
                 max_age=access_token_lifetime.total_seconds(),
             )
@@ -163,12 +169,12 @@ class LoginViewSet(viewsets.GenericViewSet):
                 key='refresh_token',
                 value=str(refresh_token),
                 httponly=True,
-                secure=True,
+                secure=False,
                 samesite='Lax',
                 max_age=refresh_token_lifetime.total_seconds(),
             )
 
-            logger.info("Access and refresh tokens set for user %s.", email)
+            # Log the setting of tokens...
             return response
         else:
             logger.warning("Invalid login attempt for email: %s", email)
@@ -178,34 +184,26 @@ class LoginViewSet(viewsets.GenericViewSet):
 class LogoutViewSet(viewsets.GenericViewSet):
     """
     A viewset for user logout.
-
+    
     This viewset provides a `create` action for logging out the user
     by blacklisting the refresh token and removing it from cookies.
-
-    Attributes:
-        permission_classes (list): The list of permission classes to restrict access to authenticated users only.
     """
-    # Only authenticated users can access this view
     permission_classes = [IsAuthenticated]
 
     def create(self, request) -> Response:
         """
         Log a user out by blacklisting their refresh token.
 
-        This method retrieves the refresh token from the user's cookies,
-        blacklists it to prevent further use, and deletes both access and
-        refresh tokens from the cookies.
-
         Args:
             request: The HTTP request containing the refresh token in cookies.
 
         Returns:
-            Response: A response indicating the status of the logout attempt,
-                      including success or error messages.
-
-        Raises:
-            Exception: If there is an issue with blacklisting the token or deleting cookies.
+            Response: A response indicating the status of the logout attempt.
         """
+        # Short-circuit schema generation if called by Swagger
+        if getattr(self, 'swagger_fake_view', False):
+            return Response()
+
         # Retrieve the refresh token from cookies
         refresh_token = request.COOKIES.get('refresh_token')
 
@@ -235,8 +233,8 @@ class LogoutViewSet(viewsets.GenericViewSet):
             return response
         except Exception as e:
             logger.error("Logout failed: %s", str(e))
-            # Handle any exceptions that occur and return an error response
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
 class ChangePasswordViewSet(viewsets.GenericViewSet):
     """
     A viewset for changing user passwords.
@@ -350,6 +348,10 @@ class ResetPasswordViewSet(viewsets.GenericViewSet):
         # Log the attempt for a non-existent email
         logger.warning("Password reset request for non-existent email: %s", email)
         return Response({"error": "User with this email not found"}, status=status.HTTP_404_NOT_FOUND)
+from rest_framework.decorators import action
+from rest_framework.response import Response
+from rest_framework import status
+
 class UserViewSet(viewsets.ModelViewSet):
     """
     A viewset for managing CustomUser model instances.
@@ -363,26 +365,7 @@ class UserViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def update(self, request, *args, **kwargs) -> Response:
-        """
-        Update an existing user instance, including the profile image.
-
-        If a new profile image is uploaded, the old image is deleted from the
-        server. The method first stores the path of the old profile image,
-        calls the parent class's update method to handle the update, and
-        finally, if the profile image has changed, the old image file is
-        deleted from the filesystem.
-
-        Args:
-            request (HttpRequest): The HTTP request object containing the new user data.
-            *args: Variable length argument list for additional positional arguments.
-            **kwargs: Arbitrary keyword arguments for additional named parameters.
-
-        Returns:
-            Response: The response object with the updated user data.
-
-        Raises:
-            OSError: If an error occurs while deleting the old profile image.
-        """
+        # Existing update logic remains unchanged
         instance = self.get_object()
         old_image = instance.profile_image.path if instance.profile_image else None
 
@@ -403,15 +386,28 @@ class UserViewSet(viewsets.ModelViewSet):
 
         return response
 
+    @action(detail=False, methods=['get'], permission_classes=[IsAuthenticated])
+    def me(self, request):
+        """
+        Retrieve the current user's information.
+
+        Returns:
+            Response: The response object containing the current user's data.
+        """
+        user = request.user  # Get the currently authenticated user
+        data = {
+            'first_name': user.first_name,
+            'username': user.username,
+        }
+        return Response(data, status=status.HTTP_200_OK)
+
+
 
 class TokenRefreshViewSet(viewsets.GenericViewSet):
     """
     A viewset that handles the creation of a new access token from a refresh token.
-
-    This viewset is responsible for accepting a refresh token from cookies
-    and issuing a new access token. It handles scenarios where the token
-    is missing, invalid, or expired. The token expiration depends on whether
-    the "remember me" feature is set during login.
+    
+    This viewset accepts a refresh token from cookies and issues a new access token.
     """
     permission_classes = [AllowAny]
 
@@ -419,19 +415,17 @@ class TokenRefreshViewSet(viewsets.GenericViewSet):
         """
         Create a new access token from a refresh token.
 
-        This method retrieves the refresh token from the request cookies,
-        validates it, and issues a new access token. If the refresh token is
-        associated with the "remember me" option, the access token lifetime
-        will be extended accordingly.
-
         Args:
-            request (HttpRequest): The HTTP request object.
+            request: The HTTP request containing the refresh token in cookies.
 
         Returns:
-            Response: A response containing the new access token if the refresh
-            token is valid, or an error message if the refresh token is missing
-            or invalid.
+            Response: A response containing the new access token or an error message.
         """
+        # Short-circuit schema generation if called by Swagger
+        if getattr(self, 'swagger_fake_view', False):
+            return Response()
+
+        # Retrieve the refresh token from cookies
         refresh_token = request.COOKIES.get('refresh_token')
 
         if not refresh_token:
@@ -463,7 +457,7 @@ class TokenRefreshViewSet(viewsets.GenericViewSet):
                 key='access_token',
                 value=str(new_access_token),
                 httponly=True,
-                secure=True,
+                secure=False,
                 samesite='Lax',
                 max_age=access_token_lifetime.total_seconds()
             )

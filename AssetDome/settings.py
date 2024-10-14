@@ -47,7 +47,8 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt.token_blacklist',
     'django_celery_beat',
     'drf_yasg',
-    'corsheaders'
+    'corsheaders',
+    'frontend'
 ]
 
 MIDDLEWARE = [
@@ -139,6 +140,13 @@ STATIC_URL = 'static/'
 # Set this to a directory where Django will store all static files after collecting them
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
+STATICFILES_DIRS = [
+    BASE_DIR / "frontend/static",  # Update BASE_DIR as necessary
+]
+
+LOGIN_REDIRECT_URL = '/'  # This will redirect to '/' after successful login
+
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
@@ -169,7 +177,7 @@ REST_FRAMEWORK = {
 # Simple JWT settings
 from datetime import timedelta
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),  # Short-lived access token when remember_me is False
+    "ACCESS_TOKEN_LIFETIME": timedelta(seconds=5),  # Short-lived access token when remember_me is False
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),  # Normal refresh token lifetime
     "REMEMBER_ME_ACCESS_TOKEN_LIFETIME": timedelta(minutes=10),
     "REMEMBER_ME_REFRESH_TOKEN_LIFETIME": timedelta(days=30),  

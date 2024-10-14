@@ -250,6 +250,7 @@ class MajorCategoryViewSet(viewsets.ModelViewSet):
 
     queryset = MajorCategory.objects.all().order_by('id')
     serializer_class = MajorCategorySerializer
+    permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer):
         """
@@ -297,6 +298,7 @@ class MinorCategoryViewSet(viewsets.ModelViewSet):
 
     queryset = MinorCategory.objects.all().order_by('id')
     serializer_class = MinorCategorySerializer
+    permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer):
         """
@@ -344,6 +346,7 @@ class DepartmentViewSet(viewsets.ModelViewSet):
 
     queryset = Department.objects.all().order_by('id')
     serializer_class = DepartmentSerializer
+    permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer):
         """
@@ -390,6 +393,7 @@ class EmployeeViewSet(viewsets.ModelViewSet):
 
     queryset = Employee.objects.all().order_by('id')
     serializer_class = EmployeeSerializer
+    permission_classes = [IsAuthenticated]
 
     def update(self, request, *args, **kwargs) -> Response:
         """
@@ -468,6 +472,7 @@ class SupplierViewSet(viewsets.ModelViewSet):
     
     queryset = Supplier.objects.all().order_by('id')
     serializer_class = SupplierSerializer
+    permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer):
         """
@@ -515,6 +520,7 @@ class LocationViewSet(viewsets.ModelViewSet):
 
     queryset = Location.objects.all().order_by('id')
     serializer_class = LocationSerializer
+    permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer):
         """
@@ -561,7 +567,7 @@ class ReportGenerationView(APIView):
     (like `major_category`, `department`) instead of using their numeric IDs.
     """
 
-    permission_classes = [IsGetOnly]
+    permission_classes = [IsAuthenticated, IsGetOnly]
 
     def get(self, request) -> Response:
         """
@@ -655,6 +661,7 @@ class ImportAssetsView(APIView):
     validates the data, creates new assets or updates existing ones, and
     returns a conflict log for any issues encountered during the import.
     """
+    permission_classes = [IsAuthenticated]
 
     def post(self, request) -> Response:
         """
@@ -734,7 +741,7 @@ class AssetSummaryView(APIView):
     A view that provides a summary of assets, including overall statistics
     and detailed breakdowns by department, supplier, location, and categories.
     """
-    permission_classes = [IsGetOnly]
+    permission_classes = [IsAuthenticated, IsGetOnly]
 
     def get(self, request, *args, **kwargs) -> Response:
         """
@@ -844,7 +851,7 @@ class AssetSummaryView(APIView):
             }
 
             # Cache the response data
-            cache.set(cache_key, response_data, timeout=60 * 15)  # Cache for 15 minutes
+            cache.set(cache_key, response_data, timeout=60 * 1)  # Cache for 5 minutes
             logger.info("Asset summary generated and cached for key '%s'.", cache_key)
         else:
             logger.info("Cache hit for key '%s', returning cached asset summary.", cache_key)

@@ -424,7 +424,7 @@ class Asset(models.Model):
 
     def generate_asset_code(self) -> str:
         """Generates a new asset code based on existing codes."""
-        last_asset = Asset.objects.all().order_by('id').last()
+        last_asset = Asset.objects.order_by('-id').first()
         new_code = 'AS000001' if not last_asset else f'AS{int(last_asset.asset_code[2:]) + 1:06d}'
         logger.info(f"Generated new asset code: {new_code}")
         return new_code
@@ -437,11 +437,11 @@ class Asset(models.Model):
 
     def set_economic_life(self) -> int:
         """Sets the economic life based on the major category."""
-        if self.major_category.name == 'Furniture':
-            return 8
-        elif self.major_category.name == 'ICT':
-            return 3
-        return 5  # Default value
+        economic_life_mapping = {
+        'Furniture': 8,
+        'ICT': 3
+        }
+        return economic_life_mapping.get(self.major_category.name, 5)
 
     def validate_date_of_purchase(self):
         """Validate that the date of purchase is not later than the current date."""

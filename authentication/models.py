@@ -49,6 +49,8 @@ class CustomUser(AbstractUser):
         profile_image (ImageField): User's profile image with a default image set.
     """
     email = models.EmailField(unique=True)
+    first_name = models.CharField(max_length=30, blank=False, null=False)  # Enforce first name as required
+    last_name = models.CharField(max_length=150, blank=False, null=False) 
     profile_image = models.ImageField(
         upload_to='profile_pictures/',
         blank=True,
