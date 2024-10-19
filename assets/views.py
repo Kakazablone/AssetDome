@@ -506,8 +506,19 @@ class SupplierViewSet(viewsets.ModelViewSet):
         Returns:
             Response: The response to the delete request.
         """
+        supplier = self.get_object()  # Get the supplier instance to delete
+
+        # Check if there are any related assets
+        if supplier.assets.exists():
+            logger.warning("Failed to delete Supplier with ID %s: it has associated assets.", supplier.id)
+            return Response(
+                {'error': 'Cannot delete supplier because it has associated assets.'},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        # Proceed to delete the supplier if there are no related assets
         response = super().destroy(request, *args, **kwargs)
-        logger.info("Deleted Supplier with ID: %s", kwargs['pk'])
+        logger.info("Deleted Supplier with ID: %s", supplier.id)
         return response
 
 

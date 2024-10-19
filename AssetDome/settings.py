@@ -177,7 +177,7 @@ REST_FRAMEWORK = {
 # Simple JWT settings
 from datetime import timedelta
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(seconds=5),  # Short-lived access token when remember_me is False
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),  # Short-lived access token when remember_me is False
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),  # Normal refresh token lifetime
     "REMEMBER_ME_ACCESS_TOKEN_LIFETIME": timedelta(minutes=10),
     "REMEMBER_ME_REFRESH_TOKEN_LIFETIME": timedelta(days=30),  
