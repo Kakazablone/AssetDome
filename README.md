@@ -37,60 +37,39 @@ djangorestframework-simplejwt (for JWT support)
 Installation
 Clone the Repository
 
-bash
-Copy code
-git clone https://github.com/yourusername/AssetDome.git
+git clone https://github.com/Kakazablone/AssetDome.git
 cd AssetDome
 Create a Virtual Environment
-
-bash
-Copy code
 python3 -m venv venv
 source venv/bin/activate
 Install Dependencies
-
-bash
-Copy code
 pip install -r requirements.txt
-Database Migration
 
-bash
-Copy code
+Database Migration
 python manage.py migrate
 Create a Superuser
 
-bash
-Copy code
 python manage.py createsuperuser
 Run the Server
-
-bash
-Copy code
 python manage.py runserver
+
 API Documentation
 The API documentation can be accessed at:
-
-bash
-Copy code
 http://localhost:8000/swagger/
+
 Usage
 Running Tests
-bash
-Copy code
 python manage.py test
+
 Sample API Requests
 Using curl or Postman, you can interact with various endpoints. Examples:
 
 Login
-
-bash
-Copy code
 curl -X POST http://localhost:8000/auth/login/ -d "username=user&password=pass"
-Create Asset
 
-bash
-Copy code
+Create Asset
 curl -X POST http://localhost:8000/assets/ -H "Authorization: Bearer <token>" -d "<asset_data>"
+
 Available Endpoints
 Refer to the Swagger documentation for a full list of endpoints, including:
 
@@ -98,6 +77,7 @@ GET /assets/ - List all assets
 POST /assets/ - Create a new asset
 PUT /assets/<id>/ - Update an asset
 DELETE /assets/<id>/ - Delete an asset
+
 Contributing
 Feel free to submit issues or pull requests. Contributions are welcome!
 
