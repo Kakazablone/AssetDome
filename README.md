@@ -9,19 +9,19 @@ Automatic Asset Code Generation: Asset codes are auto-incremented in the format 
 Customizable Fields: Add dynamic options for categories, departments, and asset conditions.
 Depreciation Calculation: Calculate asset depreciation based on user-selected accounting methods.
 CRUD Tracking: Timestamped logs for each Create, Read, Update, and Delete operation, retaining user records even after account deletion.
-2. User Authentication and Management
+3. User Authentication and Management
 Custom Authentication System: Users can register, log in, and manage their passwords with JWT authentication.
 Enhanced Security: Includes functionalities for password reset, password change, and secure account deletion.
 Custom User Model: Extends AbstractUser to support first name, last name, email, and password fields.
 Role-Based Access Control: Allows superusers to edit specific fields like Barcode, while other users have restricted permissions.
-3. API Functionalities
+4. API Functionalities
 DRF API with Viewsets: Provides CRUD endpoints for assets, user authentication, and related entities using viewsets.
 Swagger Documentation: Integrated Swagger for API documentation, covering endpoints, parameters, and response formats.
 Internationalization and Pagination: Supports multi-language responses and paginates data for optimized API performance.
-4. Reports and Exporting
+5. Reports and Exporting
 Excel Report Generation: Generate detailed Excel reports for all assets with their fields (e.g., asset code, barcode, condition, status).
 Historical Data Retention: Retains asset history even if users or categories are removed, ensuring accurate reporting.
-5. Database Structure and Relationships
+6. Database Structure and Relationships
 Modular Database Design: Related classes (Departments, Locations, Suppliers, Major/Minor Categories, Employees) use ForeignKey relationships for easy data linkage.
 Cascading Deletes for Categories: Deleting a major or minor category will delete associated assets, preserving data integrity.
 Geolocation Support: Location model includes latitude and longitude fields, automatically updated.
